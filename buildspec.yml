@@ -3,12 +3,11 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 16.x
+      java: corretto-11
   build:
     commands:
-      - echo "Installing dependencies..."
-      - npm install
-      - echo "Running tests..."
+      - echo "Building Spring Boot application..."
+      - ./mvnw clean package
   post_build:
     commands:
       - echo "Project deployed."
@@ -19,4 +18,4 @@ artifacts:
 
 cache:
   paths:
-    - node_modules/
+    - "/root/.m2/**/*"
