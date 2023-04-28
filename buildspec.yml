@@ -7,6 +7,7 @@ phases:
   build:
     commands:
       - echo "Building Spring Boot application..."
+      - cd m3project/
       - ./mvnw clean package
   post_build:
     commands:
