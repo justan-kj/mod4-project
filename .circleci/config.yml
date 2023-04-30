@@ -2,7 +2,7 @@ version: 2.1
 
 jobs:
   build:
-    working_directory: ~/mod4-project
+    working_directory: ~/mod4-project/m3project
     docker:
       - image: circleci/openjdk:11
     steps:
@@ -10,7 +10,7 @@ jobs:
       - run: mvn clean package
 
   test:
-    working_directory: ~/mod4-project
+    working_directory: ~/mod4-project/m3project
     docker:
       - image: circleci/openjdk:11
     steps:
@@ -18,7 +18,7 @@ jobs:
       - run: mvn test
 
   snyk:
-    working_directory: ~/mod4-project
+    working_directory: ~/mod4-project/m3project
     docker:
       - image: snyk/snyk-cli
     steps:
@@ -26,7 +26,7 @@ jobs:
       - run: snyk test
 
   deploy:
-    working_directory: ~/mod4-project
+    working_directory: ~/mod4-project/m3project
     docker:
       - image: circleci/aws-cli
     steps:
