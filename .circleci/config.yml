@@ -1,65 +1,40 @@
 version: 2.1
 
+workflows:
+  version: 2
+  ci_flow:
+    jobs:
+      - build
+      - test
+  cicd_flow:
+    jobs:
+      - build
+      - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: release
+
 jobs:
   build:
-    working_directory: ~/mod4-project/m3project
     docker:
-      - image: circleci/openjdk:11
+      - image: circleci/openjdk:11-jdk
     steps:
       - checkout
-      - run: mvn clean package
-
+      - run: mvn clean compile
   test:
-    working_directory: ~/mod4-project/m3project
     docker:
-      - image: circleci/openjdk:11
+      - image: circleci/openjdk:11-jdk
     steps:
       - checkout
       - run: mvn test
-
-  snyk:
-    working_directory: ~/mod4-project/m3project
-    docker:
-      - image: snyk/snyk-cli
-    steps:
-      - checkout
-      - run: snyk test
-
   deploy:
-    working_directory: ~/mod4-project/m3project
     docker:
       - image: circleci/aws-cli
     steps:
-      - checkout
       - run:
-          name: Deploy to AWS Elastic Beanstalk
+          name: Deploy to AWS
           command: |
-            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-            aws configure set region $AWS_REGION
-            aws elasticbeanstalk update-environment --environment-name my-app --version-label $CIRCLE_SHA1
-
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: release
-      - test:
-          filters:
-            branches:
-              only: develop
-      - snyk:
-          filters:
-            branches:
-              only: develop
-      - deploy:
-          requires:
-            - build
-            - test
-            - snyk
-          filters:
-            branches:
-              only: release
+            aws s3 sync target s3://sctpmod4bucket --delete
