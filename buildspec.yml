@@ -9,6 +9,14 @@ phases:
       - echo "Building Spring Boot application..."
       - cd m3project/
       - ./mvnw clean package
+      - echo "Retrieving Docker registry credentials..."
+      - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text)
+      - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text)
+      - echo "Logging in to Docker registry..."
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker build -t afawafa/mod4-project-docker:latest .
+      - echo "Pushing Docker image to registry..."
+      - docker push afawafa/mod4-project-docker:latest
   post_build:
     commands:
       - echo "Project deployed."
