@@ -4,7 +4,6 @@ phases:
   install:
     runtime-versions:
       java: corretto17
-      docker: 18
   pre_build:
     commands:
       - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text) || exit 1
