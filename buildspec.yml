@@ -3,8 +3,8 @@ version: 0.2
 env:
   shell: bash
   secrets-manager:
-    DOCKERHUB_USERNAME: docker_credentials:dockerhub_username
-    DOCKERHUB_PASSWORD: docker_credentials:dockerhub_password
+    DOCKERHUB_USERNAME: "arn:aws:secretsmanager:ap-southeast-2:591139941474:secret:docker_credentials-IBiPKo:dockerhub_username"
+    DOCKERHUB_PASSWORD: "arn:aws:secretsmanager:ap-southeast-2:591139941474:secret:docker_credentials-IBiPKo:dockerhub_credentials"
 
 phases:
   install:
@@ -13,7 +13,7 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Docker registry..."
-      - echo "$DOCKER_PASSWORD" | docker login -u afawafa --password-stdin
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   build:
     commands:
       - echo "Building Spring Boot application..."
