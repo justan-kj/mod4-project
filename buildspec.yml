@@ -1,24 +1,25 @@
 version: 0.2
 
+env:
+  shell: bash
+  secrets-manager:
+    DOCKERHUB_USERNAME: docker_credentials:DOCKER_USERNAME
+    DOCKERHUB_PASSWORD: docker_credentials:DOCKER_PASSWORD
+
 phases:
   install:
     runtime-versions:
       java: corretto17
   pre_build:
     commands:
-      - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text) 
-      - echo "username "
-      - echo "$DOCKER_USERNAME"
-      - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text) 
-
+      - echo "Logging in to Docker registry..."
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   build:
     commands:
       - echo "Building Spring Boot application..."
       - cd m3project/
       - ./mvnw clean package
       - echo "Retrieving Docker registry credentials..."
-      - echo "Logging in to Docker registry..."
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t afawafa/mod4-project-docker:latest .
       - echo "Pushing Docker image to registry..."
       - docker push afawafa/mod4-project-docker:latest
