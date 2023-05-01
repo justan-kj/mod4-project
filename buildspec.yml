@@ -6,9 +6,10 @@ phases:
       java: corretto17
   pre_build:
     commands:
-      - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text) || exit 1
-      - echo "user: $DOCKER_USERNAME"
-      - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text) || exit 1
+      - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text) 
+      - echo "username "
+      - echo "$DOCKER_USERNAME"
+      - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text) 
 
   build:
     commands:
