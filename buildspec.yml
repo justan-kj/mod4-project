@@ -27,8 +27,6 @@ phases:
     commands:
       - echo "Project deployed."
 
-serviceRole: arn:aws:iam::123456789012:role/Role-1
-
 artifacts:
   files:
     - "**/*"
