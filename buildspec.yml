@@ -7,9 +7,9 @@ phases:
   pre_build:
     commands:
       - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text) || exit 1
-      - if [[ -z "$DOCKER_USERNAME" ]]; then echo "Error: DOCKER_USERNAME is empty"; exit 1; fi
+      - echo "user: $DOCKER_USERNAME"
       - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text) || exit 1
-      - if [[ -z "$DOCKER_PASSWORD" ]]; then echo "Error: DOCKER_PASSWORD is empty"; exit 1; fi
+
   build:
     commands:
       - echo "Building Spring Boot application..."
