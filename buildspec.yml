@@ -19,8 +19,9 @@ phases:
       - echo "Building Spring Boot application..."
       - cd m3project/
       - ./mvnw clean package
-      - echo "Retrieving Docker registry credentials..."
+      - echo "Building the Docker image..."
       - docker build -t afawafa/mod4-project-docker:latest .
+      - docker tag afawafa/mod4-project-docker:latest afawafa/mod4-project-docker:latest
       - echo "Pushing Docker image to registry..."
       - docker push afawafa/mod4-project-docker:latest
   post_build:
