@@ -4,14 +4,17 @@ phases:
   install:
     runtime-versions:
       java: corretto17
+      docker: 18
+  pre_build:
+    commands:
+      - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text) || exit 1
+      - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text) || exit 1
   build:
     commands:
       - echo "Building Spring Boot application..."
       - cd m3project/
       - ./mvnw clean package
       - echo "Retrieving Docker registry credentials..."
-      - export DOCKER_USERNAME=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_USERNAME" --output text)
-      - export DOCKER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id docker_credentials --query "DOCKER_PASSWORD" --output text)
       - echo "Logging in to Docker registry..."
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t afawafa/mod4-project-docker:latest .
@@ -20,6 +23,8 @@ phases:
   post_build:
     commands:
       - echo "Project deployed."
+
+serviceRole: arn:aws:iam::123456789012:role/Role-1
 
 artifacts:
   files:
