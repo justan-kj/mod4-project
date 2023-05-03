@@ -31,8 +31,11 @@ public class TransportController {
     @GetMapping()
     public ResponseEntity<List<Transport>> getAllTransport() {
         try {
-            List<Transport> destinations = (List<Transport>) transportRepo.findAll();
-            return ResponseEntity.ok().body(destinations);
+            List<Transport> transports = (List<Transport>) transportRepo.findAll();
+            if (transports.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(transports);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
